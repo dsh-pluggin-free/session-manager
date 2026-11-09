@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-const code = readFileSync(new URL('../client.js', import.meta.url), 'utf8')
+const code = readFileSync(new URL('../client.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 const instrumented = code.replace(
   "    return {\n      inject: ['slots', 'locale'],",
   "    window.__dsrTest = { ui, enterSelection, exitSelection, toggleSelected, toggleTrashSelected, toggleSelectAllTrash, openBatchConfirm, openPanel, closePanel, openConfirm, closeConfirm, archiveSelected, restoreItem, confirmPurge, refreshList, refreshIds };\n\n    return {\n      inject: ['slots', 'locale'],",

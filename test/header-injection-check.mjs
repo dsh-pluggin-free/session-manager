@@ -57,7 +57,7 @@ function flushFrames() {
   for (const callback of current) callback()
 }
 
-let code = readFileSync(new URL('../client.js', import.meta.url), 'utf8')
+let code = readFileSync(new URL('../client.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 code = code.replace(
   "    return {\n      inject: ['slots', 'locale'],",
   "    window.__dsrTest = { ui, syncHeaderControls, setSessionsCollapsed, toggleSessionsCollapsed, openPanel, closePanel };\n\n    return {\n      inject: ['slots', 'locale'],",
