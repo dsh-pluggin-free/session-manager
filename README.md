@@ -20,10 +20,10 @@
 </p>
 
 <p align="center">
-  <a href="#中文"><strong>中文</strong></a> · <a href="#english">English</a>
+  <a href="#zh"><strong>中文</strong></a> · <a href="#english">English</a>
 </p>
 
-<a id="中文"></a>
+<a id="zh"></a>
 
 # 会话管理器 · DSH Session Manager
 
@@ -274,7 +274,7 @@ Windows / macOS / Linux 上只要能运行 DSH 即可；主要在 Windows + DSH 
 > A recycle bin, multi-select batch delete, collapsible session list, and guarded permanent cleanup for the DSH sidebar.
 
 <p align="center">
-  <a href="#中文">中文</a> · <a href="#english"><strong>English</strong></a>
+  <a href="#zh">中文</a> · <a href="#english"><strong>English</strong></a>
 </p>
 
 If you use DeepSeek Harness every day, your sidebar eventually fills up with sessions. Native archive is safe, but it is not a workflow: archived rows hide in a filter, batch cleanup is tedious, and freeing disk space without deleting the wrong thing is risky.
