@@ -1,6 +1,6 @@
 {
   "name": "dsh-session-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Session manager for DeepSeek Harness: recycle bin, multi-select batch delete, collapsible session list, restore and permanent cleanup.",
   "license": "Apache-2.0",
