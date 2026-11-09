@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Session recycle bin">
+  <rect width="64" height="64" rx="14" fill="#eef1ff"/>
+  <path d="M19 23h26" fill="none" stroke="#4d6bfe" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M26 23v-3.2h12V23" fill="none" stroke="#4d6bfe" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M23 23l1.7 23.2h14.6L41 23" fill="none" stroke="#4d6bfe" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M29 30v10M35 30v10" fill="none" stroke="#4d6bfe" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M24 52c2.6-3.6 5.4-3.6 8 0 2.6 3.6 5.4 3.6 8 0" fill="none" stroke="#8ea0ff" stroke-width="2.6" stroke-linecap="round"/>
+</svg>

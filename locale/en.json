@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Session manager",
+    "description": "Adds a collapsible session recycle bin, header collapse/select controls, and multi-select batch delete to the DSH left sidebar."
+  }
+}

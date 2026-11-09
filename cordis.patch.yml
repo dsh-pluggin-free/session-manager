@@ -1,0 +1,6 @@
+# dsh-session-manager bundle patch: inserts the plugin row into the profile.
+# The node half serves /session-recycle/* JSON routes; the browser half renders
+# the sidebar recycle bin and the header controls that talk to those routes.
+- insert:
+    - id: session-manager
+      name: 'dsh-session-manager'

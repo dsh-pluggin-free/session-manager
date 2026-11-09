@@ -1,0 +1,70 @@
+{
+  "name": "dsh-session-manager",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Session manager for DeepSeek Harness: recycle bin, multi-select batch delete, collapsible session list, restore and permanent cleanup.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsh-pluggin-free/session-manager.git"
+  },
+  "homepage": "https://github.com/dsh-pluggin-free/session-manager",
+  "bugs": {
+    "url": "https://github.com/dsh-pluggin-free/session-manager/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "session-manager",
+    "recycle-bin",
+    "session",
+    "archive"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./path-guard.js": "./path-guard.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "path-guard.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "assets/*.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/path-guard.test.js && node test/ssr-render-check.mjs && node test/client-actions-check.mjs && node test/header-injection-check.mjs && node test/harness/run-purge-test.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-workspace"
+      ]
+    }
+  }
+}
