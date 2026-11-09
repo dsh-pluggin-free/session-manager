@@ -50,7 +50,7 @@
 
 | 功能 | 说明 |
 | --- | --- |
-| 🗑️ 会话回收站 | 侧栏底部独立区域，默认折叠；展开后从标题行向下铺开，内容占满剩余高度并内部滚动 |
+| 🗑️ 会话回收站 | 侧栏底部独立区域，默认折叠；展开后从标题行向下铺开，内容占满剩余高度并内部滚动；归档后的会话行会从会话列表隐藏，即使原生筛选开着“显示已归档” |
 | ✅ 选择模式 | 标题栏搜索按钮左侧的勾选按钮进入；空闲会话行左侧出现圆框，勾选后显示对号 |
 | 🧺 批量归档 | 选中多个会话，一键移入回收站；运行中的会话会先停止当前工作 |
 | 🧹 回收站多选 | 回收站每行左侧勾选框，支持全选 / 取消全选 |
@@ -140,6 +140,7 @@ dsh plugin --profile desktop remove dsh-session-manager
 
 - 在会话列表多选后点「删除」，或在会话行菜单里归档。
 - 删除只会把会话移入回收站（DSH 原生归档），**不会立刻从磁盘消失**。
+- 归档后的会话会立即从会话列表隐藏（即使原生视图开着“显示已归档”），只出现在回收站里。
 - 运行中的会话会先停止当前工作，再归档。
 
 ### 2. 从回收站恢复
@@ -297,7 +298,7 @@ If you use DeepSeek Harness every day, your sidebar eventually fills up with ses
 
 | Feature | What it does |
 | --- | --- |
-| 🗑️ Recycle bin | A collapsible section at the sidebar bottom; expands downward and fills the available height with its own scroll |
+| 🗑️ Recycle bin | A collapsible section at the sidebar bottom; expands downward and fills the available height with its own scroll; archived rows disappear from the session list even when the native filter shows archived rows |
 | ✅ Selection mode | A checkbox button left of the search button; idle session rows show a circle that becomes a checkmark |
 | 🧺 Batch archive | Select multiple sessions and move them to the recycle bin; running sessions are stopped first |
 | 🧹 Recycle-bin multi-select | A checkbox on every trash row, with Select all / Clear selection |
@@ -387,6 +388,7 @@ dsh plugin --profile desktop remove dsh-session-manager
 
 - Select sessions and click **Delete**, or use the session row menu's archive action.
 - The session goes to the recycle bin (native DSH archive); the log is **not** removed from disk yet.
+- Archived rows disappear from the session list immediately (even when the native view shows archived sessions); they only appear in the recycle bin.
 - Running sessions are stopped before being archived.
 
 ### Restore from the recycle bin

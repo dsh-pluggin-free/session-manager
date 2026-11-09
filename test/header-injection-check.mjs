@@ -20,7 +20,10 @@ const html = `<!doctype html><html><head></head><body>
           </div>
           <div class="headerActions"><button type="button">视图</button></div>
         </div>
-        <div class="listArea">sessions</div>
+        <div class="listArea">
+          <div role="treeitem" data-row-key="session:s1">one</div>
+          <div role="treeitem" data-row-key="session:s2">two</div>
+        </div>
       </div>
     </div>
   </div>
@@ -60,7 +63,7 @@ function flushFrames() {
 let code = readFileSync(new URL('../client.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 code = code.replace(
   "    return {\n      inject: ['slots', 'locale'],",
-  "    window.__dsrTest = { ui, syncHeaderControls, setSessionsCollapsed, toggleSessionsCollapsed, openPanel, closePanel };\n\n    return {\n      inject: ['slots', 'locale'],",
+  "    window.__dsrTest = { ui, syncHeaderControls, applyArchivedIds, syncHiddenRows, setSessionsCollapsed, toggleSessionsCollapsed, openPanel, closePanel };\n\n    return {\n      inject: ['slots', 'locale'],",
 )
 
 globalThis.fetch = async () => ({
@@ -193,6 +196,19 @@ assert.notEqual(region.style.flex, '0 0 auto')
 assert.notEqual(section.style.flex, '1 1 auto')
 assert.notEqual(footArea.style.flex, '1 1 auto')
 
+// Archived sessions must disappear from the native session list, even when the
+// native filter is set to show archived rows.
+const rowOne = document.querySelector('[data-row-key="session:s1"]')
+const rowTwo = document.querySelector('[data-row-key="session:s2"]')
+window.__dsrTest.applyArchivedIds(['s1'])
+flushFrames()
+assert.equal(rowOne.dataset.dsrArchivedHidden, 'true')
+assert.equal(rowTwo.dataset.dsrArchivedHidden, undefined)
+window.__dsrTest.applyArchivedIds(['s2'])
+flushFrames()
+assert.equal(rowOne.dataset.dsrArchivedHidden, undefined)
+assert.equal(rowTwo.dataset.dsrArchivedHidden, 'true')
+
 console.log(JSON.stringify({
   ok: true,
   injectedAfterLabel: true,
@@ -203,6 +219,7 @@ console.log(JSON.stringify({
   observerReinjects: true,
   expandsDownward: true,
   layoutRestores: true,
+  hidesArchivedRows: true,
   registrations: registrations.map((entry) => entry.options.name),
 }))
 

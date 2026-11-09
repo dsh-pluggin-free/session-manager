@@ -102,6 +102,7 @@ window.__ModuleLoader__.load({
       mode: false,
       selected: new Set(),
       trashSelected: new Set(),
+      archivedIds: [],
       items: [],
       count: 0,
       loading: false,
@@ -149,6 +150,7 @@ window.__ModuleLoader__.load({
     let headerObserver = null
     let headerAttrObserver = null
     let headerFrame = 0
+    let rowsFrame = 0
     let headerCollapse = null
     let headerSelect = null
 
@@ -344,6 +346,38 @@ window.__ModuleLoader__.load({
       applyHostChrome()
     }
 
+    function applyArchivedIds(ids) {
+      ui.archivedIds = Array.isArray(ids) ? ids.map(String) : []
+      scheduleRowsSync()
+    }
+
+    /**
+     * The native browser can be set to "show archived", where an archived row
+     * stays visible (gray). This plugin owns the archive lifecycle, so archived
+     * sessions belong in the recycle bin rather than the active row list: hide
+     * those native rows while they remain in the archive set.
+     */
+    function syncHiddenRows() {
+      const archived = new Set(ui.archivedIds)
+      for (const row of document.querySelectorAll('[data-row-key^="session:"]')) {
+        const key = row.getAttribute('data-row-key') || ''
+        const sessionId = key.slice('session:'.length)
+        if (archived.has(sessionId)) {
+          if (row.dataset.dsrArchivedHidden !== 'true') row.dataset.dsrArchivedHidden = 'true'
+        } else if (row.dataset.dsrArchivedHidden === 'true') {
+          delete row.dataset.dsrArchivedHidden
+        }
+      }
+    }
+
+    function scheduleRowsSync() {
+      if (rowsFrame) return
+      rowsFrame = window.requestAnimationFrame(() => {
+        rowsFrame = 0
+        syncHiddenRows()
+      })
+    }
+
     function scheduleHeaderSync() {
       if (headerFrame) return
       headerFrame = window.requestAnimationFrame(() => {
@@ -354,9 +388,13 @@ window.__ModuleLoader__.load({
 
     function installHeaderObserver() {
       if (headerObserver) return
-      headerObserver = new MutationObserver(scheduleHeaderSync)
+      headerObserver = new MutationObserver(() => {
+        scheduleHeaderSync()
+        scheduleRowsSync()
+      })
       headerObserver.observe(document.body, { childList: true, subtree: true })
       scheduleHeaderSync()
+      scheduleRowsSync()
     }
 
     function disposeHeaderObserver() {
@@ -365,8 +403,13 @@ window.__ModuleLoader__.load({
       if (headerAttrObserver) headerAttrObserver.disconnect()
       headerAttrObserver = null
       if (headerFrame) window.cancelAnimationFrame(headerFrame)
+      if (rowsFrame) window.cancelAnimationFrame(rowsFrame)
       headerFrame = 0
+      rowsFrame = 0
       removeHeaderButtons()
+      for (const row of document.querySelectorAll('[data-row-key^="session:"]')) {
+        delete row.dataset.dsrArchivedHidden
+      }
       headerCollapse = null
       headerSelect = null
     }
@@ -416,6 +459,7 @@ window.__ModuleLoader__.load({
       const ids = Array.isArray(data.ids) ? data.ids : []
       const changed = ids.length !== ui.count
       ui.count = ids.length
+      applyArchivedIds(ids)
       return changed
     }
 
@@ -534,7 +578,8 @@ window.__ModuleLoader__.load({
       try {
         const data = await postJson('/archive', { sessionIds: ids, stopActivity: true })
         const results = Array.isArray(data.results) ? data.results : []
-        const ok = results.filter((entry) => entry.ok).length
+        const okIds = results.filter((entry) => entry.ok).map((entry) => entry.sessionId)
+        const ok = okIds.length
         const fail = results.length - ok
         ui.mode = false
         ui.selected.clear()
@@ -542,6 +587,7 @@ window.__ModuleLoader__.load({
           ? { key: 'noticePartial', params: { ok, fail } }
           : { key: 'noticeArchived', params: { count: ok } }
         if (ok > 0) {
+          applyArchivedIds([...new Set([...ui.archivedIds, ...okIds])])
           ui.open = true
           await refreshList(true)
         }
@@ -568,6 +614,7 @@ window.__ModuleLoader__.load({
         const result = Array.isArray(data.results) ? data.results[0] : null
         if (!result || !result.ok) throw new Error((result && result.error) || 'restore failed')
         ui.trashSelected.delete(item.sessionId)
+        applyArchivedIds(ui.archivedIds.filter((id) => id !== item.sessionId))
         ui.notice = { key: 'noticeRestored', params: {} }
         await refreshList(true)
         try {
@@ -605,6 +652,9 @@ window.__ModuleLoader__.load({
           throw new Error((first && first.error) || 'purge failed')
         }
         for (const id of okIds) ui.trashSelected.delete(id)
+        if (okIds.length > 0) {
+          applyArchivedIds(ui.archivedIds.filter((id) => !okIds.includes(id)))
+        }
         ui.confirmItem = null
         ui.confirmIds = null
         ui.confirmBatch = false
@@ -915,6 +965,7 @@ window.__ModuleLoader__.load({
             const ids = Array.isArray(data.ids) ? data.ids : []
             const changed = ids.length !== ui.count
             ui.count = ids.length
+            applyArchivedIds(ids)
             if (ui.open && changed) await refreshList(true)
             else emit()
           } catch (error) {
@@ -1023,6 +1074,7 @@ window.__ModuleLoader__.load({
 .dsr-head-btn[aria-expanded='false'] svg { transform: rotate(-90deg); }
 [class*='sectionHeader']:has([class*='searchExpanded']) .dsr-head-btn { display: none; }
 [data-dsr-sessions-collapsed='true'] [class*='listArea'] { display: none !important; }
+[data-dsr-archived-hidden='true'] { display: none !important; }
 .dsr-trigger-row {
   display: flex; align-items: center; justify-content: center; gap: 2px;
   width: 100%; min-width: 36px; height: 34px; padding: 0 2px; box-sizing: border-box;
