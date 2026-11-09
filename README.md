@@ -12,6 +12,9 @@
   <a href="https://github.com/dsh-pluggin-free/session-manager/actions/workflows/test.yml">
     <img src="https://github.com/dsh-pluggin-free/session-manager/actions/workflows/test.yml/badge.svg?branch=main" alt="Tests">
   </a>
+  <a href="https://github.com/dsh-pluggin-free/session-manager/releases">
+    <img src="https://img.shields.io/github/v/release/dsh-pluggin-free/session-manager?style=for-the-badge&color=10b981" alt="Release">
+  </a>
   <img src="https://img.shields.io/badge/DSH-0.2.2--rc.1-4d6bfe?style=for-the-badge" alt="DSH version">
   <img src="https://img.shields.io/badge/Windows%20%7C%20macOS%20%7C%20Linux-1f2937?style=for-the-badge" alt="Platforms">
 </p>
